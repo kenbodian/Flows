@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B737 Captain Flows — Quick Reference</title>
+<style>
+  :root {
+    --navy: #1a2744;
+    --gold: #c8952e;
+    --gold-light: #f5e6c8;
+    --bg: #f7f8fa;
+    --card-bg: #ffffff;
+    --text: #2c3e50;
+    --text-light: #6b7c93;
+    --border: #e2e8f0;
+    --ca-bg: #eef2ff;
+    --ca-border: #4f69c6;
+    --fo-bg: #f0fdf4;
+    --fo-border: #22c55e;
+    --both-bg: #fffbeb;
+    --both-border: #d97706;
+    --caution-bg: #fef3c7;
+    --warning-bg: #fee2e2;
+    --note-bg: #eff6ff;
+    --ng-tag: #7c3aed;
+    --max-tag: #0891b2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #2d4a7a 100%);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), #e8b84d, var(--gold));
+  }
+  .hero h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.25rem;
+  }
+  .hero .sub {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  /* NAV */
+  .toc {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .toc-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  .toc-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .toc-chip {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .toc-chip:hover {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+
+  /* MAIN */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  /* FLOW SECTION */
+  .flow-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .flow-header {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 0 0;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .flow-header:hover { background: #f8fafc; }
+
+  .flow-num {
+    background: var(--navy);
+    color: var(--gold);
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .flow-info { flex: 1; }
+  .flow-name {
+    font-size: 1rem;
+    font-weight: 650;
+    color: var(--navy);
+  }
+  .flow-ref {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    margin-top: 0.1rem;
+  }
+
+  .flow-toggle {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .flow-section.open .flow-toggle { transform: rotate(180deg); }
+
+  .flow-body {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 0 1.25rem 1.25rem;
+    display: none;
+  }
+  .flow-section.open .flow-body { display: block; }
+
+  /* ROLE BADGES */
+  .role-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+    margin-right: 0.25rem;
+  }
+  .role-ca { background: var(--ca-bg); color: var(--ca-border); border: 1px solid var(--ca-border); }
+  .role-fo { background: var(--fo-bg); color: var(--fo-border); border: 1px solid var(--fo-border); }
+  .role-both { background: var(--both-bg); color: var(--both-border); border: 1px solid var(--both-border); }
+
+  /* TYPE TAGS */
+  .type-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.05rem 0.35rem;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+    margin-left: 0.3rem;
+  }
+  .tag-ng { background: #ede9fe; color: var(--ng-tag); }
+  .tag-max { background: #ecfeff; color: var(--max-tag); }
+
+  /* FLOW ITEMS */
+  .flow-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+  .flow-item:last-child { border-bottom: none; }
+
+  .item-label {
+    font-weight: 600;
+    color: var(--navy);
+    min-width: 0;
+    flex-shrink: 0;
+  }
+  .item-dots {
+    flex: 1;
+    border-bottom: 1px dotted #cbd5e1;
+    min-width: 20px;
+    align-self: baseline;
+    margin-bottom: 0.3em;
+  }
+  .item-value {
+    font-weight: 500;
+    color: var(--gold);
+    text-align: right;
+    flex-shrink: 0;
+    max-width: 45%;
+  }
+
+  /* SUBSECTIONS */
+  .subsection {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 2px solid var(--border);
+  }
+  .subsection-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  /* NOTE / CAUTION / WARNING */
+  .callout {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    border-left: 3px solid;
+  }
+  .callout-note { background: var(--note-bg); border-color: #3b82f6; color: #1e40af; }
+  .callout-caution { background: var(--caution-bg); border-color: #d97706; color: #92400e; }
+  .callout-warning { background: var(--warning-bg); border-color: #dc2626; color: #991b1b; }
+  .callout-label { font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* DESC TEXT */
+  .desc {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin: 0.15rem 0 0.25rem;
+    line-height: 1.5;
+  }
+
+  /* OVERVIEW TABLE */
+  .overview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+  .overview-table th {
+    background: var(--navy);
+    color: white;
+    padding: 0.5rem 0.6rem;
+    text-align: left;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .overview-table td {
+    padding: 0.45rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .overview-table tr:nth-child(even) { background: #f8fafc; }
+  .overview-table tr:hover { background: var(--gold-light); }
+
+  /* PHASE LABELS */
+  .phase-label {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .phase-preflight { background: #dbeafe; color: #1e40af; }
+  .phase-ground { background: #fce7f3; color: #9d174d; }
+  .phase-takeoff { background: #fee2e2; color: #991b1b; }
+  .phase-enroute { background: #d1fae5; color: #065f46; }
+  .phase-descent { background: #e0e7ff; color: #3730a3; }
+  .phase-landing { background: #fef3c7; color: #92400e; }
+
+  /* EXPAND ALL */
+  .controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+  }
+  .btn {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: var(--navy); color: white; border-color: var(--navy); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.3rem; }
+    .container { padding: 1rem 0.75rem 3rem; }
+    .flow-header { padding: 0.75rem 1rem; }
+    .flow-body { padding: 0 1rem 1rem; }
+    .toc { padding: 0.75rem 1rem; }
+    .item-value { max-width: 40%; }
+  }
+
+  @media print {
+    .toc, .controls { display: none; }
+    .flow-body { display: block !important; }
+    .flow-section { break-inside: avoid; }
+    .hero { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>B737 Captain Flows</h1>
+  <div class="sub">AOM Rev 26-01 &bull; 01/20/2026 &bull; Southwest Airlines</div>
+</div>
+
+<nav class="toc">
+  <div class="toc-title">Jump to Flow</div>
+  <div class="toc-grid">
+    <a href="#f1" class="toc-chip">1 Preflight Safety</a>
+    <a href="#f2" class="toc-chip">2 CA Flight Deck Prep</a>
+    <a href="#f3" class="toc-chip">3 Through Flight</a>
+    <a href="#f4" class="toc-chip">4 After Start</a>
+    <a href="#f5" class="toc-chip">5 Config Check</a>
+    <a href="#f6" class="toc-chip">6 Before Takeoff</a>
+    <a href="#f7" class="toc-chip">7 Climb</a>
+    <a href="#f8" class="toc-chip">8 Cruise Status</a>
+    <a href="#f9" class="toc-chip">9 FL 180</a>
+    <a href="#f10" class="toc-chip">10 10,000 Ft Desc</a>
+    <a href="#f11" class="toc-chip">11 After Landing</a>
+    <a href="#f12" class="toc-chip">12 Engine Shutdown</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="controls">
+    <button class="btn" onclick="toggleAll(true)">Expand All</button>
+    <button class="btn" onclick="toggleAll(false)">Collapse All</button>
+  </div>
+
+  <!-- ========== FLOW 1 ========== -->
+  <div class="flow-section" id="f1">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">1</div>
+      <div class="flow-info">
+        <div class="flow-name">Aircraft Preflight Safety Flow &amp; Security Search</div>
+        <div class="flow-ref">AOM 6.1.1 &bull; <span class="phase-label phase-preflight">Preflight</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="callout callout-note"><span class="callout-label">Note</span> &mdash; Normally completed by the FO but may be completed by either pilot. Inspect coat closet, flight deck storage areas, first observer area, rudder pedal area, and around seats for prohibited items.</div>
+
+      <div class="flow-item"><span class="item-label">Aircraft Logbook</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">Verify aircraft number. Verify systems/controls safe for power-up and actuation.</p>
+
+      <div class="flow-item"><span class="item-label">Landing Gear Pins</span><span class="item-dots"></span><span class="item-value">Verify 3 Aboard</span></div>
+      <div class="flow-item"><span class="item-label">Manual Gear Extension Access Door</span><span class="item-dots"></span><span class="item-value">Closed</span></div>
+      <div class="flow-item"><span class="item-label">Flight Deck Jumpseat (First Observer)</span><span class="item-dots"></span><span class="item-value">Open</span></div>
+      <p class="desc">Confirm no prohibited items in seat or stowage area.</p>
+
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-max">MAX</span> Flashlight</span><span class="item-dots"></span><span class="item-value">Test (as installed)</span></div>
+      <div class="flow-item"><span class="item-label">Circuit Breakers</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">Verify all in. Verify MEL status of pulled/collared CBs. Notify CA of tripped CBs.</p>
+
+      <div class="flow-item"><span class="item-label">DC Meter Selector</span><span class="item-dots"></span><span class="item-value">BAT</span></div>
+      <div class="flow-item"><span class="item-label">Battery Switch</span><span class="item-dots"></span><span class="item-value">ON / Guarded</span></div>
+      <p class="desc">Check DC VOLTS and DC AMPS. No minimum voltage required for APU start.</p>
+
+      <div class="flow-item"><span class="item-label">Fuel Panel</span><span class="item-dots"></span><span class="item-value">1 Pump ON</span></div>
+      <div class="flow-item"><span class="item-label">Hydraulic Pump ELEC Switches</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+      <div class="flow-item"><span class="item-label">Air Conditioning Panel</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">Verify pack switches and APU bleed switch OFF.</p>
+
+      <div class="flow-item"><span class="item-label">Landing Gear Lever</span><span class="item-dots"></span><span class="item-value">DOWN</span></div>
+      <p class="desc">Verify 3 green lights illuminated. Verify gear down lights on aft overhead panel.</p>
+
+      <div class="flow-item"><span class="item-label">Fire/Overheat Warning System</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+      <div class="flow-item"><span class="item-label">AC Meter Selector</span><span class="item-dots"></span><span class="item-value">GRD POWER</span></div>
+      <div class="flow-item"><span class="item-label">GRD PWR Switch</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <div class="flow-item"><span class="item-label">APU Switch</span><span class="item-dots"></span><span class="item-value">START</span></div>
+      <p class="desc">No earlier than 5 min prior to expected pushback. Hold momentarily, release to ON.</p>
+
+      <div class="flow-item"><span class="item-label">APU Generator Bus Switches</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <p class="desc">When APU GEN OFF BUS light illuminates, place ON. Verify light extinguishes.</p>
+
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-max">MAX</span> APU DOOR Light</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label">IRS L and R</span><span class="item-dots"></span><span class="item-value">NAV</span></div>
+      <p class="desc">Verify ON DC lights, align lights. First flight: complete IRS alignment. Verify GPS light not illuminated.</p>
+
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-max">MAX</span> MAINT Light</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label">Electrical Panel</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <p class="desc">GALLEY Power — ON.</p>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 2 ========== -->
+  <div class="flow-section" id="f2">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">2</div>
+      <div class="flow-info">
+        <div class="flow-name">Captain's Flight Deck Preparation Flow</div>
+        <div class="flow-ref">AOM 6.4.1.1 &ndash; 6.4.1.3 &bull; <span class="phase-label phase-preflight">Preflight</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="subsection-title">Common Items (NG &amp; MAX)</div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Registration/Certificates</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> FD Door Blowout Panels</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Maintenance Status</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">Logbook, airworthiness release, MEL/CDL items, HGS placard, repetitive (M) procedures.</p>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Aircraft Security Search</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Landing Gear Pins</span><span class="item-dots"></span><span class="item-value">Verify 3 Aboard</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Circuit Breakers</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> EFB Preflight</span><span class="item-dots"></span><span class="item-value">Accomplish</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Additional Items</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">LOTO box (seal intact), heat resistant gloves, QRH, Quick Ref Cards, Normal Checklists, Deice cards, Reference cards.</p>
+
+      <div class="flow-item"><span class="item-label">LE Devices Annunciator Panel</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+      <div class="flow-item"><span class="item-label">ELT (as installed)</span><span class="item-dots"></span><span class="item-value">ARM / ELT Light Out</span></div>
+      <div class="flow-item"><span class="item-label">GPS, ILS, GLS Lights</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label">IRS Mode Selectors</span><span class="item-dots"></span><span class="item-value">NAV</span></div>
+      <div class="flow-item"><span class="item-label">Service Interphone Switch</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-ng">NG</span> Reverser Lights</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-max">MAX</span> REV CMD/AIR GND/LTD Lights</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label">EEC Switches</span><span class="item-dots"></span><span class="item-value">ON, ALTN Lights Out</span></div>
+      <div class="flow-item"><span class="item-label">Crew Oxygen Pressure</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label">Passenger Oxygen Switch</span><span class="item-dots"></span><span class="item-value">NORMAL / Guarded</span></div>
+      <div class="flow-item"><span class="item-label">Flight Recorder Test Switch</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+      <div class="flow-item"><span class="item-label">MACH AIRSPEED WARNING Btn(s)</span><span class="item-dots"></span><span class="item-value">Press</span></div>
+      <div class="flow-item"><span class="item-label">STALL WARNING TEST Buttons</span><span class="item-dots"></span><span class="item-value">Press &amp; Hold</span></div>
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-ng">NG</span> AID POWER Switch</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-ng">NG</span> PSEU Light</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-max">MAX</span> MAINT Light</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-max">MAX</span> ELEV JAM LANDING ASSIST</span><span class="item-dots"></span><span class="item-value">OFF / Guarded / Light Out</span></div>
+      <div class="flow-item"><span class="item-label">Seat</span><span class="item-dots"></span><span class="item-value">Adjust</span></div>
+      <div class="flow-item"><span class="item-label">Rudder Pedals</span><span class="item-dots"></span><span class="item-value">Adjust</span></div>
+      <div class="flow-item"><span class="item-label">Flight Deck Lighting</span><span class="item-dots"></span><span class="item-value">Set as Desired</span></div>
+      <div class="flow-item"><span class="item-label">Master Lights Test / Dim Switch</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+      <div class="flow-item"><span class="item-label">Escape Strap</span><span class="item-dots"></span><span class="item-value">Connected</span></div>
+      <div class="flow-item"><span class="item-label">Flight Control Panel</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">FLT CONTROL — ON/Guarded. ALT FLAPS Master — OFF/Guarded. ALT FLAPS Pos — OFF. SPOILER — ON/Guarded.</p>
+
+      <div class="flow-item"><span class="item-label">Yaw Damper Switch</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <div class="flow-item"><span class="item-label">Navigation Panel</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">VHF NAV, IRS, FMC — NORMAL. Display — AUTO/NORMAL.</p>
+      <div class="flow-item"><span class="item-label">Fuel Panel</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <p class="desc">AFT/FWD pumps ON. Center tank &gt;1,000 lb: CTR pumps ON. Crossfeed closed.</p>
+      <div class="flow-item"><span class="item-label">Electrical Panel</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">DC Amps/Volts within limits. BAT DISCHARGE, TR UNIT, ELEC lights extinguished. Gen Drive Disconnect guarded/safetied. Bus Transfer AUTO.</p>
+      <div class="flow-item"><span class="item-label">EQUIP COOLING Switches</span><span class="item-dots"></span><span class="item-value">Normal</span></div>
+      <div class="flow-item"><span class="item-label"><span class="type-tag tag-max">MAX</span> EQUIP SMOKE Light</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label">Passenger Signs</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <div class="flow-item"><span class="item-label">Window Heat Switches</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <p class="desc">At least 10 min prior to takeoff. Verify OVERHEAT lights extinguish, ON lights illuminate.</p>
+      <div class="flow-item"><span class="item-label">Probe Heat Switches</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+      <p class="desc">ON → lights not illuminated → AUTO → amber lights illuminated.</p>
+      <div class="flow-item"><span class="item-label">Wing Anti-Ice Switch</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+      <div class="flow-item"><span class="item-label">Engine Anti-Ice Switches</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+      <div class="flow-item"><span class="item-label">Hydraulic Pump Switches</span><span class="item-dots"></span><span class="item-value">Sys A—OFF, Sys B—ON</span></div>
+      <div class="flow-item"><span class="item-label">EQUIP Light</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label">Voice Recorder</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+      <div class="flow-item"><span class="item-label">Pressurization Indicators</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">Diff Pressure — Zero. Cabin Alt — Field Elevation. Rate — Zero.</p>
+      <div class="flow-item"><span class="item-label">EFIS Control Panel</span><span class="item-dots"></span><span class="item-value">Set (BARO = IN)</span></div>
+      <div class="flow-item"><span class="item-label">Autothrottle Arm Switch</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+      <div class="flow-item"><span class="item-label">Mode Control Panel</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <p class="desc">Heading — departure runway. Altitude — per planned mode. FD Switch — ON. Course — departure/EFP course.</p>
+
+      <div class="subsection">
+        <div class="subsection-title"><span class="type-tag tag-ng">NG</span> Continuation (6.4.1.2)</div>
+        <div class="flow-item"><span class="item-label">Display Select Panels</span><span class="item-dots"></span><span class="item-value">NORM</span></div>
+        <div class="flow-item"><span class="item-label">Autopilot Indicators Panel</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+        <div class="flow-item"><span class="item-label">Clock</span><span class="item-dots"></span><span class="item-value">Check / Set UTC</span></div>
+        <div class="flow-item"><span class="item-label">Flight Instruments</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+        <p class="desc">No warning flags. ASI check. ADI level. Altimeter set/limits. Standby alt/ASI. IVSI zero. Compasses crosscheck. Standby horizon set. Standby RMI check/set.</p>
+        <div class="flow-item"><span class="item-label">Nose Wheel Steering Switch</span><span class="item-dots"></span><span class="item-value">NORM / Guarded</span></div>
+        <div class="flow-item"><span class="item-label">N1 Set Knob</span><span class="item-dots"></span><span class="item-value">AUTO</span></div>
+        <div class="flow-item"><span class="item-label">SPD REF Selector</span><span class="item-dots"></span><span class="item-value">AUTO</span></div>
+        <div class="flow-item"><span class="item-label">Autobrake Select Switch</span><span class="item-dots"></span><span class="item-value">RTO</span></div>
+        <div class="flow-item"><span class="item-label">Fuel Flow Switch</span><span class="item-dots"></span><span class="item-value">RESET</span></div>
+        <div class="flow-item"><span class="item-label">Engine Instruments</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+        <div class="flow-item"><span class="item-label">Fuel Quantity Indicators</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+        <div class="flow-item"><span class="item-label">Engine Oil Quantity</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+        <div class="flow-item"><span class="item-label">Radar</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+        <p class="desc">After test: mode selector to TEST, EFIS WXR deselected.</p>
+        <div class="flow-item"><span class="item-label">Speedbrake Lever</span><span class="item-dots"></span><span class="item-value">Verify Down Detent</span></div>
+        <div class="flow-item"><span class="item-label">Reverse Thrust Levers</span><span class="item-dots"></span><span class="item-value">Verify Down</span></div>
+        <div class="flow-item"><span class="item-label">Thrust Levers (one at a time)</span><span class="item-dots"></span><span class="item-value">Full Fwd → Full Closed</span></div>
+        <div class="flow-item"><span class="item-label">Parking Brake</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+        <div class="flow-item"><span class="item-label">Start Levers</span><span class="item-dots"></span><span class="item-value">Cutoff</span></div>
+        <div class="flow-item"><span class="item-label">Stabilizer / AP Trim Cutout Sw</span><span class="item-dots"></span><span class="item-value">NORMAL</span></div>
+        <div class="flow-item"><span class="item-label">Fire/Overheat Warning System</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+        <div class="flow-item"><span class="item-label">Cargo Fire Detection System</span><span class="item-dots"></span><span class="item-value">Test</span></div>
+        <div class="flow-item"><span class="item-label">HGS Control Panel</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+        <div class="flow-item"><span class="item-label">VHF NAV Radios</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+        <div class="flow-item"><span class="item-label">VHF Comm / Audio Panel</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+        <div class="flow-item"><span class="item-label">Crew Oxygen System</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+        <div class="flow-item"><span class="item-label">Aileron and Rudder Trim</span><span class="item-dots"></span><span class="item-value">Centered</span></div>
+        <div class="flow-item"><span class="item-label">Stabilizer Trim Override Switch</span><span class="item-dots"></span><span class="item-value">NORM / Guarded</span></div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title"><span class="type-tag tag-max">MAX</span> Continuation (6.4.1.3)</div>
+        <p class="desc">Similar sequence to NG. Key differences: MAINT Light (Extinguished), ISFD replaces individual standby instruments, Auto Brake/Fuel Flow placement differs. Refer to AOM 6.4.1.3 for the complete MAX-specific order.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 3 ========== -->
+  <div class="flow-section" id="f3">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">3</div>
+      <div class="flow-info">
+        <div class="flow-name">Through Flight — Captain Flow</div>
+        <div class="flow-ref">AOM 6.6.1 (NG) / 6.6.2 (MAX) &bull; <span class="phase-label phase-preflight">Preflight</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="subsection-title"><span class="type-tag tag-ng">NG</span> Through Flight (6.6.1)</div>
+      <div class="flow-item"><span class="item-label">Circuit Breakers</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label">Instrument Transfer Switches</span><span class="item-dots"></span><span class="item-value">Normal</span></div>
+      <div class="flow-item"><span class="item-label">Fuel Panel</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <div class="flow-item"><span class="item-label">Electrical Panel</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label">Passenger Signs</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <div class="flow-item"><span class="item-label">Window Heat Switches</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <div class="flow-item"><span class="item-label">Hydraulic Pump Switches</span><span class="item-dots"></span><span class="item-value">Sys A—OFF, Sys B—ON</span></div>
+      <div class="flow-item"><span class="item-label">EQUIP Light</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+      <div class="flow-item"><span class="item-label">Autothrottle Arm Switch</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+      <div class="flow-item"><span class="item-label">Mode Control Panel</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <div class="flow-item"><span class="item-label">Nose Wheel Steering Switch</span><span class="item-dots"></span><span class="item-value">NORM / Guarded</span></div>
+      <div class="flow-item"><span class="item-label">Flight Instruments</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label">Standby Alt / ASI</span><span class="item-dots"></span><span class="item-value">Set / Check</span></div>
+      <div class="flow-item"><span class="item-label">Standby Compass / RDMI</span><span class="item-dots"></span><span class="item-value">Check / Set</span></div>
+      <div class="flow-item"><span class="item-label">Fuel Flow Switch</span><span class="item-dots"></span><span class="item-value">RESET</span></div>
+      <div class="flow-item"><span class="item-label">Autobrake Select Switch</span><span class="item-dots"></span><span class="item-value">RTO</span></div>
+      <div class="flow-item"><span class="item-label">Speedbrake Lever</span><span class="item-dots"></span><span class="item-value">Verify Down Detent</span></div>
+      <div class="flow-item"><span class="item-label">Reverse Thrust Levers</span><span class="item-dots"></span><span class="item-value">Verify Down</span></div>
+      <div class="flow-item"><span class="item-label">Thrust Levers</span><span class="item-dots"></span><span class="item-value">Full Fwd → Full Closed</span></div>
+      <div class="flow-item"><span class="item-label">Parking Brake</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <div class="flow-item"><span class="item-label">Start Levers</span><span class="item-dots"></span><span class="item-value">CUTOFF</span></div>
+      <div class="flow-item"><span class="item-label">HGS Control Panel</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+      <div class="flow-item"><span class="item-label">VHF NAV Radios</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <div class="flow-item"><span class="item-label">VHF Comm / Audio Panel</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <div class="flow-item"><span class="item-label">Aileron and Rudder Trim</span><span class="item-dots"></span><span class="item-value">Centered</span></div>
+      <div class="flow-item"><span class="item-label">Crew Oxygen System</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">Test flow, 100%, verify quantity for dispatch.</p>
+      <div class="flow-item"><span class="item-label">FD Sliding Window / Handle</span><span class="item-dots"></span><span class="item-value">Closed &amp; Locked</span></div>
+      <div class="flow-item"><span class="item-label">EFB Preflight</span><span class="item-dots"></span><span class="item-value">Accomplish</span></div>
+      <div class="flow-item"><span class="item-label">Clearance</span><span class="item-dots"></span><span class="item-value">Review</span></div>
+      <div class="flow-item"><span class="item-label">FMC</span><span class="item-dots"></span><span class="item-value">Review</span></div>
+      <div class="flow-item"><span class="item-label">Aircraft Logbook</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+
+      <div class="subsection">
+        <div class="subsection-title"><span class="type-tag tag-max">MAX</span> Through Flight (6.6.2)</div>
+        <p class="desc">Same items with these additions/changes: MAINT Light — Extinguished (after CBs). ISFD — Set/Check (replaces standby instruments). NWS, Auto Brake, and Fuel Flow order differ slightly. Refer to AOM 6.6.2 for complete MAX order.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 4 ========== -->
+  <div class="flow-section" id="f4">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">4</div>
+      <div class="flow-info">
+        <div class="flow-name">After Start Flow</div>
+        <div class="flow-ref">AOM 7.4 &bull; <span class="phase-label phase-ground">Ground</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="callout callout-note"><span class="callout-label">Note</span> &mdash; Completed after one or both engines started (through rollback) and the Pushback Crew has departed.</div>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Electrical</span><span class="item-dots"></span><span class="item-value">Generators ON</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> APU Switch</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> PROBE HEAT Switches</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Engine / Wing Anti-Ice</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> System A Hydraulic Pumps</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <p class="desc">After tug clear, one at a time. Confirm LOW PRESSURE lights extinguish.</p>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Air Cond / Pressurization</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <p class="desc">Configuration varies for single/dual engine taxi. Refer to AOM for specific configs.</p>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> WHEEL WELL Light</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Oil Quantity</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Start Lever(s)</span><span class="item-dots"></span><span class="item-value">Verify IDLE Detent</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Hand on flap lever</span><span class="item-dots"></span><span class="item-value">"Standing By Flaps"</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Command flap setting</span><span class="item-dots"></span><span class="item-value">e.g., "Flaps 5"</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Restate &amp; set flaps</span><span class="item-dots"></span><span class="item-value">e.g., "Flaps 5"</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Verify flap lever / transit</span><span class="item-dots"></span><span class="item-value">Call "Control Check"</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Respond</span><span class="item-dots"></span><span class="item-value">"Control Check"</span></div>
+      <p class="desc">CA: holds tiller, checks rudder pedals. FO: checks control column/wheel, freedom of movement, return to center.</p>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 5 ========== -->
+  <div class="flow-section" id="f5">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">5</div>
+      <div class="flow-info">
+        <div class="flow-name">(CA) Configuration Check Flow</div>
+        <div class="flow-ref">AOM 8.5.1 &bull; <span class="phase-label phase-takeoff">Taxi Out</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="callout callout-caution"><span class="callout-label">Timing</span> &mdash; No later than 1 minute before departure (~2,000 ft taxi remaining or 2nd in departure sequence).</div>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Flaps / Stab Trim / Speedbrake</span><span class="item-dots"></span><span class="item-value">Visually Verify</span></div>
+      <p class="desc">Flaps and stab trim set for takeoff. Speedbrake lever in forward/down detent.</p>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> ATTEND Button</span><span class="item-dots"></span><span class="item-value">Push</span></div>
+      <p class="desc">Monitor PA audio — FAs begin departure PA.</p>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Thrust Lever Check</span><span class="item-dots"></span><span class="item-value">Perform</span></div>
+      <p class="desc">Parking brake released. Momentarily advance one thrust lever past midrange and back. Verify takeoff config warning horn/lights do NOT activate.</p>
+
+      <div class="callout callout-warning"><span class="callout-label">Warning</span> &mdash; If horn activates: stop aircraft, set parking brake, refer to QRH NNC 15.</div>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 6 ========== -->
+  <div class="flow-section" id="f6">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">6</div>
+      <div class="flow-info">
+        <div class="flow-name">Before Takeoff Flow</div>
+        <div class="flow-ref">AOM 8.5.2 &bull; <span class="phase-label phase-takeoff">Taxi Out</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Air Cond / Press Panel</span><span class="item-dots"></span><span class="item-value">Configure for Takeoff</span></div>
+      <p class="desc">ISO VALVE — AUTO or CLOSE. RECIRC FAN — AUTO.</p>
+
+      <div class="flow-item"><span class="item-label">Weather Radar / Terrain Display</span><span class="item-dots"></span><span class="item-value">Set for Departure</span></div>
+      <p class="desc">Tilt at 4°. Coordinate WXR and terrain display. <span class="type-tag tag-max">MAX</span> PM select VSD on EFIS.</p>
+
+      <div class="flow-item"><span class="item-label">APU</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> MCP</span><span class="item-dots"></span><span class="item-value">Verify or Select</span></div>
+      <p class="desc">A/T ARM — ARM. VNAV — ARM. LNAV — ARM. Verify white on FMA for each.</p>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Verbalize FMA status</span><span class="item-dots"></span><span class="item-value">e.g., "AT, LNAV, VNAV, Armed"</span></div>
+
+      <div class="callout callout-note"><span class="callout-label">Note</span> &mdash; Before crossing the hold short line: EFBs secured, Before Takeoff checklist complete. Both pilots devote full attention to clearing final and takeoff path.</div>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 7 ========== -->
+  <div class="flow-section" id="f7">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">7</div>
+      <div class="flow-info">
+        <div class="flow-name">Climb Flow</div>
+        <div class="flow-ref">AOM 10.2.1 &bull; <span class="phase-label phase-enroute">En Route</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="callout callout-note"><span class="callout-label">Trigger</span> &mdash; Leveling at or climbing through 10,000 ft. Call "10,000 feet."</div>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> ATTEND Button</span><span class="item-dots"></span><span class="item-value">Push once</span></div>
+      <div class="flow-item"><span class="item-label">Pressurization Panel</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <p class="desc">Correct bleeds/packs config. Aircraft properly pressurized. Last chance to verify after bleeds off/unpressurized takeoff.</p>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Cabin Temperature</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Start Switches</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+      <p class="desc">Normally OFF (or remain AUTO).</p>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> APU</span><span class="item-dots"></span><span class="item-value">As Required (normally OFF)</span></div>
+      <div class="flow-item"><span class="item-label">Fuel System</span><span class="item-dots"></span><span class="item-value">Monitor</span></div>
+      <p class="desc">CTR FUEL PUMP switches OFF at first low pressure indication.</p>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> RUNWAY INHIBIT Switch</span><span class="item-dots"></span><span class="item-value">NORM</span></div>
+      <div class="flow-item"><span class="item-label">VHF #2 Radio</span><span class="item-dots"></span><span class="item-value">Guard (121.5)</span></div>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 8 ========== -->
+  <div class="flow-section" id="f8">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">8</div>
+      <div class="flow-info">
+        <div class="flow-name">Aircraft Cruise Status Flow</div>
+        <div class="flow-ref">AOM 10.6.1 &bull; <span class="phase-label phase-enroute">En Route</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="callout callout-note"><span class="callout-label">Frequency</span> &mdash; Periodically during cruise. Crosscheck altimeters hourly in RVSM airspace.</div>
+      <div class="flow-item"><span class="item-label">Primary &amp; Secondary Altimeters</span><span class="item-dots"></span><span class="item-value">Crosscheck</span></div>
+      <div class="flow-item"><span class="item-label">Electrical Power</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label">Hydraulic System</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label">Cabin Pressurization</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label">Cabin Temperature</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label">Engine Status</span><span class="item-dots"></span><span class="item-value">Check</span></div>
+      <div class="flow-item"><span class="item-label">Fuel Usage</span><span class="item-dots"></span><span class="item-value">Monitor</span></div>
+      <div class="flow-item"><span class="item-label">Flight Plan Progress</span><span class="item-dots"></span><span class="item-value">Monitor</span></div>
+      <div class="flow-item"><span class="item-label">BAT DISCHARGE Light</span><span class="item-dots"></span><span class="item-value">Extinguished</span></div>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 9 ========== -->
+  <div class="flow-section" id="f9">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">9</div>
+      <div class="flow-info">
+        <div class="flow-name">Approaching FL 180 / 18,000 Ft Flow</div>
+        <div class="flow-ref">AOM 10.10 &bull; <span class="phase-label phase-descent">Descent</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Landing &amp; Runway Turnoff Lights</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Engine Start Switches</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Wing Illum / Logo Lights</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+      <p class="desc">Logo lights not required in daylight.</p>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> ATTEND Button</span><span class="item-dots"></span><span class="item-value">Press once</span></div>
+      <p class="desc">Directs FAs to secure cabin, make Final Descent PA. No later than 18,000 ft.</p>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Seatbelt Sign</span><span class="item-dots"></span><span class="item-value">Ensure ON</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Monitor FA acknowledgment</span><span class="item-dots"></span><span class="item-value">Via PA audio</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Inform FO after monitoring</span><span class="item-dots"></span><span class="item-value">Complete</span></div>
+      <div class="callout callout-note"><span class="callout-label">Note</span> &mdash; If FAs don't begin PA, PM announces: "Flight Attendants, secure the cabin for arrival."</div>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 10 ========== -->
+  <div class="flow-section" id="f10">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">10</div>
+      <div class="flow-info">
+        <div class="flow-name">Approaching 10,000 Ft Flow (Descent)</div>
+        <div class="flow-ref">AOM 10.12 &bull; <span class="phase-label phase-descent">Descent</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Call</span><span class="item-dots"></span><span class="item-value">"10,000 Feet"</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Call</span><span class="item-dots"></span><span class="item-value">"10,000 Feet"</span></div>
+      <div class="flow-item"><span class="item-label">Pressurization System</span><span class="item-dots"></span><span class="item-value">Check proper operation</span></div>
+      <div class="flow-item"><span class="item-label">Seatbelt Sign Switch</span><span class="item-dots"></span><span class="item-value">Ensure ON</span></div>
+      <div class="callout callout-note"><span class="callout-label">Note</span> &mdash; If new weather significantly affects landing performance, CA may recompute landing data. Ensure EFB screens are active to avoid unlocking during critical phase.</div>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 11 ========== -->
+  <div class="flow-section" id="f11">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">11</div>
+      <div class="flow-info">
+        <div class="flow-name">After Landing Flow</div>
+        <div class="flow-ref">AOM 13.1 &bull; <span class="phase-label phase-landing">Taxi In</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="callout callout-note"><span class="callout-label">Trigger</span> &mdash; After flight deck clears the runway side stripe marking.</div>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Call</span><span class="item-dots"></span><span class="item-value">"Flaps up"</span></div>
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Repeat</span><span class="item-dots"></span><span class="item-value">"Flaps up"</span></div>
+
+      <div class="subsection">
+        <div class="subsection-title"><span class="role-badge role-ca">CA</span> Captain's After Landing Flow</div>
+        <div class="flow-item"><span class="item-label">Speedbrake Lever</span><span class="item-dots"></span><span class="item-value">DOWN</span></div>
+        <p class="desc">Firmly push against stop and downward into detent.</p>
+        <div class="flow-item"><span class="item-label">Landing Lights</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+        <div class="flow-item"><span class="item-label">Runway Turnoff Lights</span><span class="item-dots"></span><span class="item-value">As Needed</span></div>
+        <div class="flow-item"><span class="item-label">Taxi Light</span><span class="item-dots"></span><span class="item-value">Ensure ON</span></div>
+        <div class="flow-item"><span class="item-label">HGS Combiner</span><span class="item-dots"></span><span class="item-value">Stow</span></div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title"><span class="role-badge role-fo">FO</span> First Officer's After Landing Flow</div>
+        <div class="flow-item"><span class="item-label">Flap Lever</span><span class="item-dots"></span><span class="item-value">UP</span></div>
+        <div class="flow-item"><span class="item-label">Clock</span><span class="item-dots"></span><span class="item-value">Start (cooldown timing)</span></div>
+        <div class="flow-item"><span class="item-label">Radar</span><span class="item-dots"></span><span class="item-value">TEST</span></div>
+        <div class="flow-item"><span class="item-label">RUNWAY INHIBIT Switch</span><span class="item-dots"></span><span class="item-value">As Directed</span></div>
+        <div class="flow-item"><span class="item-label">Autobrake Select Switch</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+        <div class="flow-item"><span class="item-label">APU Switch</span><span class="item-dots"></span><span class="item-value">Start, As Required</span></div>
+        <p class="desc">Ensure on busses prior to J-line.</p>
+        <div class="flow-item"><span class="item-label">Engine Start Switches</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+        <div class="flow-item"><span class="item-label">Strobe / Wing Illum Lights</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+        <div class="flow-item"><span class="item-label">Wheel Well Light</span><span class="item-dots"></span><span class="item-value">As Required (ON at night)</span></div>
+        <div class="flow-item"><span class="item-label">Engine / Wing Anti-Ice</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+        <div class="flow-item"><span class="item-label">Probe Heat Switches</span><span class="item-dots"></span><span class="item-value">AUTO</span></div>
+        <div class="flow-item"><span class="item-label">Window Heat Switches</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+        <div class="flow-item"><span class="item-label">APU Generator Bus Switches</span><span class="item-dots"></span><span class="item-value">ON</span></div>
+        <div class="flow-item"><span class="item-label">Station Operations</span><span class="item-dots"></span><span class="item-value">Contact, If Required</span></div>
+      </div>
+
+      <div class="callout callout-caution"><span class="callout-label">Single Engine Taxi-In</span> &mdash; Shut down Engine #2 when: idle cooldown met, braking action 5-GOOD or better. Do NOT shut down either engine on contaminated/slippery ramp until stopped at gate.</div>
+    </div>
+  </div>
+
+  <!-- ========== FLOW 12 ========== -->
+  <div class="flow-section" id="f12">
+    <div class="flow-header" onclick="toggle(this)">
+      <div class="flow-num">12</div>
+      <div class="flow-info">
+        <div class="flow-name">Engine Shutdown Flow</div>
+        <div class="flow-ref">AOM 13.4 &bull; <span class="phase-label phase-landing">At Gate</span></div>
+      </div>
+      <div class="flow-toggle">&#9660;</div>
+    </div>
+    <div class="flow-body">
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Parking Brake</span><span class="item-dots"></span><span class="item-value">Set</span></div>
+      <p class="desc">Verify light illuminates. Give "brakes set" hand signal (clenched fist).</p>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Start Lever(s)</span><span class="item-dots"></span><span class="item-value">CUTOFF</span></div>
+      <p class="desc">When idle requirements met. If APU not on busses, keep Eng #1 running until ground power connected.</p>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-both">CA/FO</span> Point to Fuel Flow values</span><span class="item-dots"></span><span class="item-value">Verify 0.00</span></div>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-both">CA/FO</span> Announce</span><span class="item-dots"></span><span class="item-value">"Fuel Flow Zero"</span></div>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> "Engines cut" hand signal</span><span class="item-dots"></span><span class="item-value">To Ground Crew</span></div>
+      <div class="callout callout-warning"><span class="callout-label">Warning</span> &mdash; Do NOT give the "engines cut" signal until both pilots have announced "Fuel Flow Zero."</div>
+
+      <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Anti-Collision Light</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+      <p class="desc">After CA gives "engines cut" signal.</p>
+
+      <div class="subsection">
+        <div class="subsection-title">Remaining Shutdown Items</div>
+        <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Fasten Seatbelt Switch</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+        <div class="flow-item"><span class="item-label"><span class="role-badge role-ca">CA</span> Fuel Pump Switches</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+        <p class="desc">Gate services: OFF. APU operating: one #1 main ON.</p>
+        <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Environmental Controls</span><span class="item-dots"></span><span class="item-value">As Required</span></div>
+        <p class="desc">Temp selectors set. APU Bleed ON (after 2 min). Pack AUTO/HIGH. RECIRC FAN as req. ISO VALVE OPEN. Eng BLEED ON.</p>
+        <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Hyd Pump ELEC Switches</span><span class="item-dots"></span><span class="item-value">OFF</span></div>
+        <p class="desc">In windy conditions, leave B ELEC on.</p>
+        <div class="flow-item"><span class="item-label"><span class="role-badge role-fo">FO</span> Transponder</span><span class="item-dots"></span><span class="item-value">STBY, Set all Zeros</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(header) {
+  header.parentElement.classList.toggle('open');
+}
+function toggleAll(open) {
+  document.querySelectorAll('.flow-section').forEach(s => {
+    if (open) s.classList.add('open');
+    else s.classList.remove('open');
+  });
+}
+// Open first section by default
+document.querySelector('.flow-section').classList.add('open');
+</script>
+
+</body>
+</html>
